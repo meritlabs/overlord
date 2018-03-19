@@ -7,12 +7,25 @@ import (
 	"com.github/meritlabs/overlord/overlord/messaging"
 )
 
+var (
+	pingDelay  = 30
+	checkDelay = 300 // 5 minutes
+	ticks      = checkDelay / pingDelay
+)
+
 func main() {
 	fmt.Printf("Overlord is ready.\n")
 
-	for t := range time.NewTicker(30 * time.Second).C {
-		fmt.Printf("Performing checks %v \n", t)
+	countdown := ticks
+	for t := range time.NewTicker(time.Duration(pingDelay) * time.Second).C {
+		fmt.Printf("Performing checks %v, %v\n", t, countdown)
+		countdown--
+
 		messaging.DoPing()
-		messaging.DoCheck()
+
+		if countdown == 0 {
+			messaging.DoCheck()
+			countdown = ticks
+		}
 	}
 }
