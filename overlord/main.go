@@ -21,10 +21,10 @@ func main() {
 		fmt.Printf("Performing checks %v, %v\n", t, countdown)
 		countdown--
 
-		messaging.DoPing()
+		go messaging.DoPing()
 
 		if countdown == 0 {
-			messaging.DoCheck()
+			go messaging.DoCheck()
 			countdown = ticks
 		}
 	}
