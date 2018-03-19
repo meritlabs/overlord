@@ -5,3 +5,6 @@ build-overseer:
 
 build-overlord:
 	go build -o ./tmp/overlord ./overlord
+
+clean:
+	rm tmp/*
