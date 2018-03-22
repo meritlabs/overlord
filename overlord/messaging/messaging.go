@@ -91,6 +91,12 @@ func DoCheck() {
 
 	fmt.Printf("Results: %v \n", results)
 
+	headers := make(map[int32][]string)
+	blocks := make(map[int32][]string)
+	difficulties := make(map[float64][]string)
+	chainworks := make(map[string][]string)
+	bestblockhashes := make(map[string][]string)
+
 	for ip, status := range results {
 		fmt.Printf("Checking IP: %s \n", ip)
 
@@ -104,5 +110,17 @@ func DoCheck() {
 			fmt.Printf("Heanders and Blocks: %b \n", blockchain.DoesHeadersAndBlocksMatch(status))
 			// Write error to slack
 		}
+
+		headers[status.Status.Headers] = append(headers[status.Status.Headers], ip)
+		blocks[status.Status.Blocks] = append(blocks[status.Status.Blocks], ip)
+		difficulties[status.Status.Difficulty] = append(difficulties[status.Status.Difficulty], ip)
+		chainworks[status.Status.Chainwork] = append(chainworks[status.Status.Chainwork], ip)
+		bestblockhashes[status.Status.BestBlockHash] = append(bestblockhashes[status.Status.BestBlockHash], ip)
 	}
+
+	fmt.Printf("Headers: %v \n", headers)
+	fmt.Printf("Blocks: %v \n", blocks)
+	fmt.Printf("Difficulty: %v \n", difficulties)
+	fmt.Printf("Chainwork: %v \n", chainworks)
+	fmt.Printf("BestBlockHash: %v \n", bestblockhashes)
 }
