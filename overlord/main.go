@@ -16,6 +16,8 @@ var (
 func main() {
 	fmt.Printf("Overlord is ready.\n")
 
+	messaging.InitSlack("MY_SLACK_TOCKEN") // load from config
+
 	countdown := ticks
 	for t := range time.NewTicker(time.Duration(pingDelay) * time.Second).C {
 		fmt.Printf("Performing checks %v, %v\n", t, countdown)
