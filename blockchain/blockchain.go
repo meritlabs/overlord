@@ -38,6 +38,11 @@ type BlockchainInfo struct {
 	Pruned               bool    `json:"pruned"`
 }
 
+type CheckResponse struct {
+	Status BlockchainInfo `json:"status"`
+	Error  error          `json:"error"`
+}
+
 func GetBlockchainInfo() (*BlockchainInfo, error) {
 	res, err := execute(binary, "--"+mode, statusCmd)
 
@@ -62,4 +67,12 @@ func execute(command string, args ...string) ([]byte, error) {
 	cmd := exec.Command(command, args...)
 
 	return cmd.Output()
+}
+
+func IsResponseValid(res CheckResponse) bool {
+	return res.Error == nil
+}
+
+func DoesHeadersAndBlocksMatch(res CheckResponse) bool {
+	return res.Status.Headers == res.Status.Blocks
 }
