@@ -11,7 +11,7 @@ type Ping struct {
 }
 
 var (
-	ips = []string{"127.0.0.1:8080", "192.168.1.6:8080"} // grab it from config
+	ips = []string{"127.0.0.1:8080"} // grab it from config
 )
 
 func DoPing() {

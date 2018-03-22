@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"com.github/meritlabs/overlord/overlord/messaging"
+	"github.com/meritlabs/overlord/overlord/messaging"
 )
 
 var (
