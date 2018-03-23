@@ -68,12 +68,13 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		go func(ip string) {
 			host := fmt.Sprintf("http://%s:8080/check", ip)
 			response, err := http.Get(host)
-			defer response.Body.Close()
 
 			if err != nil {
 				checkChannel <- Check{ip, nil, false}
 				return
 			}
+
+			defer response.Body.Close()
 
 			var check blockchain.CheckResponse
 
