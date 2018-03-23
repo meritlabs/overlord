@@ -8,7 +8,6 @@ import (
 
 var (
 	binary    = "/usr/local/bin/merit-cli"
-	mode      = "mainnet"
 	statusCmd = "getblockchaininfo"
 )
 
@@ -40,14 +39,14 @@ type BlockchainInfo struct {
 
 type CheckResponse struct {
 	Status BlockchainInfo `json:"status"`
-	Error  error          `json:"error"`
+	Error  string         `json:"error"`
 }
 
-func GetBlockchainInfo() (*BlockchainInfo, error) {
+func GetBlockchainInfo(mode string) (*BlockchainInfo, error) {
 	res, err := execute(binary, "--"+mode, statusCmd)
 
 	if err != nil {
-		fmt.Printf("Error executing getblockchaininfo command: %v \n", err)
+		fmt.Printf("GetBlockchainInfo: Error executing getblockchaininfo command: %v \n", err)
 		return nil, err
 	}
 
@@ -56,7 +55,7 @@ func GetBlockchainInfo() (*BlockchainInfo, error) {
 	err = json.Unmarshal(res, &info)
 
 	if err != nil {
-		fmt.Printf("Error unmarshalling response: %v \n", err)
+		fmt.Printf("GetBlockchainInfo: Error unmarshalling response: %v \n", err)
 		return nil, err
 	}
 
@@ -70,7 +69,7 @@ func execute(command string, args ...string) ([]byte, error) {
 }
 
 func IsResponseValid(res CheckResponse) bool {
-	return res.Error == nil
+	return res.Error == ""
 }
 
 func DoesHeadersAndBlocksMatch(res CheckResponse) bool {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,21 @@ import (
 )
 
 func main() {
-	fmt.Printf("Overseer is.\n")
+	fmt.Printf("Overseer is deployed.\n")
+
+	var mode string
+
+	flag.StringVar(&mode, "mode", "mainnet", "Daemon mode. Can be mainnet, testnet or regtest")
+	flag.Parse()
+
+	fmt.Printf("Daemon mode: %s \n\n", mode)
 
 	r := gin.Default()
 
 	r.GET("/ping", controllers.Ping)
-	r.GET("/check", controllers.Status)
+	r.GET("/check", func(c *gin.Context) {
+		controllers.Status(c, mode)
+	})
 
 	r.Run()
 }
