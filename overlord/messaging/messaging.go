@@ -83,8 +83,6 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 				fmt.Printf("DoCheck: Error unmarshalling response: %v \n", err)
 			}
 
-			fmt.Printf("Check result is: %v \n", check)
-
 			checkChannel <- Check{ip, &check, true}
 		}(ip)
 	}
@@ -97,8 +95,6 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		}
 	}
 
-	fmt.Printf("Results: %v \n", results)
-
 	headers := make(map[int32][]string)
 	blocks := make(map[int32][]string)
 	difficulties := make(map[float64][]string)
@@ -109,14 +105,11 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		fmt.Printf("Checking IP: %s \n", ip)
 
 		if !blockchain.IsResponseValid(status) {
-			fmt.Printf("Errored! \n")
 			oddNodesList.RespondedWithError = append(oddNodesList.RespondedWithError, ip)
 			continue
 		}
 
 		if !blockchain.DoesHeadersAndBlocksMatch(status) {
-			fmt.Printf("Heanders and Blocks: %b \n", blockchain.DoesHeadersAndBlocksMatch(status))
-			// Write error to slack
 			oddNodesList.HeadersAndBlocksDontMatch = append(oddNodesList.HeadersAndBlocksDontMatch, ip)
 		}
 
@@ -127,10 +120,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		bestblockhashes[status.Status.BestBlockHash] = append(bestblockhashes[status.Status.BestBlockHash], ip)
 	}
 
-	fmt.Printf("Headers: %v \n", headers)
-
 	if len(headers) > 1 {
-		fmt.Printf("Cluster have differrent number of headers on different nodes")
 		maxLen := 0
 		for _, ips := range headers {
 			currentLength := len(ips)
@@ -146,11 +136,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		}
 	}
 
-	fmt.Printf("Blocks: %v \n", blocks)
-
 	if len(blocks) > 1 {
-		fmt.Printf("Cluster have differrent number of blocks on different nodes")
-
 		maxLen := 0
 		for _, ips := range blocks {
 			currentLength := len(ips)
@@ -166,11 +152,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		}
 	}
 
-	fmt.Printf("Difficulty: %v \n", difficulties)
-
 	if len(difficulties) > 1 {
-		fmt.Printf("Cluster have differrent difficulty on different nodes")
-
 		maxLen := 0
 		for _, ips := range difficulties {
 			currentLength := len(ips)
@@ -186,11 +168,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		}
 	}
 
-	fmt.Printf("Chainwork: %v \n", chainworks)
-
 	if len(chainworks) > 1 {
-		fmt.Printf("Cluster have differrent chainwork state on different nodes")
-
 		maxLen := 0
 		for _, ips := range chainworks {
 			currentLength := len(ips)
@@ -206,10 +184,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		}
 	}
 
-	fmt.Printf("BestBlockHash: %v \n", bestblockhashes)
-
 	if len(bestblockhashes) > 1 {
-		fmt.Printf("Cluster have differrent BestBlockHash on different nodes")
 		maxLen := 0
 		for _, ips := range bestblockhashes {
 			currentLength := len(ips)

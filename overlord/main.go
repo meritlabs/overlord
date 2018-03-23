@@ -12,7 +12,7 @@ import (
 
 var (
 	pingDelay  = 30
-	checkDelay = 90
+	checkDelay = 600
 	ticks      = checkDelay / pingDelay
 )
 
