@@ -92,7 +92,9 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		select {
 		case msg := <-checkChannel:
 			fmt.Printf("Node %s is checked\n", msg.ip)
-			results[msg.ip] = *msg.response
+			if msg.response != nil {
+				results[msg.ip] = *msg.response
+			}
 		}
 	}
 
