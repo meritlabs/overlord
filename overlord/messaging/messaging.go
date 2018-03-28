@@ -36,12 +36,16 @@ func DoPing(ips []string) {
 	for _, ip := range ips {
 		go func(ip string) {
 			host := fmt.Sprintf("http://%s:8080/ping", ip)
-			_, err := http.Get(host)
+			res, err := http.Get(host)
 
 			if err != nil {
+				fmt.Printf("Error on ping request: %s \n", err)
 				pingChannel <- Ping{ip, false}
 				return
 			}
+
+			defer res.Body.Close()
+			res.Close = true
 
 			pingChannel <- Ping{ip, true}
 		}(ip)
@@ -75,6 +79,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 			}
 
 			defer response.Body.Close()
+			response.Close = true
 
 			var check blockchain.CheckResponse
 
@@ -93,6 +98,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 		case msg := <-checkChannel:
 			fmt.Printf("Node %s is checked\n", msg.ip)
 			if msg.response != nil {
+				fmt.Printf("Response: %v \n", *msg.response)
 				results[msg.ip] = *msg.response
 			}
 		}
