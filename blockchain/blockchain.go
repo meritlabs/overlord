@@ -7,8 +7,9 @@ import (
 )
 
 var (
-	binary    = "/usr/local/bin/merit-cli"
-	statusCmd = "getblockchaininfo"
+	binary      = "/usr/local/bin/merit-cli"
+	statusCmd   = "getblockchaininfo"
+	veresionCmd = "getnetworkinfo"
 )
 
 /*
@@ -42,6 +43,16 @@ type CheckResponse struct {
 	Error  string         `json:"error"`
 }
 
+type VersionInfo struct {
+	Version         int64 `json:"version"`
+	ProtocolVersion int64 `json:"protocolversion"`
+}
+
+type VersionResponse struct {
+	Info  VersionInfo `json:"info"`
+	Error string      `json:"error"`
+}
+
 func GetBlockchainInfo(mode string) (*BlockchainInfo, error) {
 	res, err := execute(binary, "--"+mode, statusCmd)
 
@@ -62,6 +73,29 @@ func GetBlockchainInfo(mode string) (*BlockchainInfo, error) {
 	return &info, nil
 }
 
+func GetInfo(mode string) (*VersionInfo, error) {
+	res, err := execute(binary, "--"+mode, veresionCmd)
+
+	if err != nil {
+		fmt.Printf("GetInfo: Error executing getinfo command: %v \n", err)
+		return nil, err
+	}
+
+	fmt.Printf("Info %s \n", string(res[:len(res)]))
+
+	var info VersionInfo
+
+	err = json.Unmarshal(res, &info)
+	fmt.Printf("Info %v \n", info)
+
+	if err != nil {
+		fmt.Printf("GetInfo: Error unmarshalling response: %v \n", err)
+		return nil, err
+	}
+
+	return &info, nil
+}
+
 func execute(command string, args ...string) ([]byte, error) {
 	cmd := exec.Command(command, args...)
 
@@ -69,6 +103,10 @@ func execute(command string, args ...string) ([]byte, error) {
 }
 
 func IsResponseValid(res CheckResponse) bool {
+	return res.Error == ""
+}
+
+func IsVersionResponseValid(res VersionResponse) bool {
 	return res.Error == ""
 }
 

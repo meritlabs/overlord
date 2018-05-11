@@ -95,3 +95,35 @@ func PostOddNodesReport(slackAPI *slack.Client, channel string, nodes OddNodes) 
 		PostMessage(slackAPI, message, channel)
 	}
 }
+
+func PostVersionMismatchReport(slackAPI *slack.Client, channel string, nodes MismatchVeresionNodes) {
+	var message string
+	post := false
+
+	if len(nodes.RespondedWithError) > 0 {
+		message += fmt.Sprintf("Unhealthy or misconfigured nodes: %v \n", strings.Join(nodes.RespondedWithError, ", "))
+		post = true
+	}
+
+	if len(nodes.HaveDifferentVersions) > 0 {
+		message += fmt.Sprintf("Newest Version is: %v \n", nodes.NewestVersion)
+		message += fmt.Sprintf("Nodes that have different version compared to the newest nodes:\n")
+		for key, nodes := range nodes.HaveDifferentVersions {
+			message += fmt.Sprintf("- %d: %v \n", key, strings.Join(nodes, ", "))
+		}
+		post = true
+	}
+
+	if len(nodes.HaveDifferentProtocolVersions) > 0 {
+		message += fmt.Sprintf("Newest Protocol Version is: %v \n", nodes.NewestProtocolVersion)
+		message += fmt.Sprintf("Nodes that have different protocol version compared to the newest nodes:\n")
+		for key, nodes := range nodes.HaveDifferentProtocolVersions {
+			message += fmt.Sprintf("- %d: %v \n", key, strings.Join(nodes, ", "))
+		}
+		post = true
+	}
+
+	if post {
+		PostMessage(slackAPI, message, channel)
+	}
+}

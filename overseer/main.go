@@ -25,6 +25,9 @@ func main() {
 	r.GET("/check", func(c *gin.Context) {
 		controllers.Status(c, mode)
 	})
+	r.GET("/version", func(c *gin.Context) {
+		controllers.Version(c, mode)
+	})
 
 	r.Run()
 }
