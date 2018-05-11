@@ -20,6 +20,12 @@ type Check struct {
 	isOnline bool
 }
 
+type VersionCheck struct {
+	ip       string
+	response *blockchain.VersionResponse
+	isOnline bool
+}
+
 type OddNodes struct {
 	RespondedWithError           []string
 	HeadersAndBlocksDontMatch    []string
@@ -28,6 +34,14 @@ type OddNodes struct {
 	HaveDifferentDifficulty      map[float64][]string
 	HaveDifferentChainwork       map[string][]string
 	HaveDifferentBestBlockHash   map[string][]string
+}
+
+type MismatchVeresionNodes struct {
+	RespondedWithError            []string
+	HaveDifferentVersions         map[int64][]string
+	HaveDifferentProtocolVersions map[int64][]string
+	NewestVersion                 int64
+	NewestProtocolVersion         int64
 }
 
 func DoPing(ips []string) {
@@ -210,4 +224,105 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 	}
 
 	PostOddNodesReport(slackApi, channel, oddNodesList)
+}
+
+func DoVersionCheck(slackApi *slack.Client, channel string, ips []string) {
+	checkChannel := make(chan VersionCheck)
+	results := make(map[string]blockchain.VersionResponse)
+	oddNodesList := MismatchVeresionNodes{
+		RespondedWithError:            []string{},
+		HaveDifferentVersions:         make(map[int64][]string),
+		HaveDifferentProtocolVersions: make(map[int64][]string),
+		NewestVersion:                 0,
+		NewestProtocolVersion:         0,
+	}
+
+	for _, ip := range ips {
+		go func(ip string) {
+			host := fmt.Sprintf("http://%s:8080/version", ip)
+			response, err := http.Get(host)
+
+			if err != nil {
+				checkChannel <- VersionCheck{ip, nil, false}
+				return
+			}
+
+			defer response.Body.Close()
+			response.Close = true
+
+			var check blockchain.VersionResponse
+
+			err = json.NewDecoder(response.Body).Decode(&check)
+
+			if err != nil {
+				fmt.Printf("DoVersionCheck: Error unmarshalling response: %v \n", err)
+			}
+
+			checkChannel <- VersionCheck{ip, &check, true}
+		}(ip)
+	}
+
+	for i := 0; i < len(ips); i++ {
+		select {
+		case msg := <-checkChannel:
+			fmt.Printf("Node %s version check is receeived\n", msg.ip)
+			if msg.response != nil {
+				fmt.Printf("Response: %v \n", *msg.response)
+				results[msg.ip] = *msg.response
+			}
+		}
+	}
+
+	versions := make(map[int64][]string)
+	protocolVersions := make(map[int64][]string)
+
+	for ip, status := range results {
+		fmt.Printf("Checking IP: %s \n", ip)
+
+		if !blockchain.IsVersionResponseValid(status) {
+			oddNodesList.RespondedWithError = append(oddNodesList.RespondedWithError, ip)
+			continue
+		}
+
+		versions[status.Info.Version] = append(versions[status.Info.Version], ip)
+		protocolVersions[status.Info.ProtocolVersion] = append(protocolVersions[status.Info.ProtocolVersion], ip)
+	}
+
+	if len(versions) > 1 {
+		var maxVer int64
+		maxVer = 0
+		for v := range versions {
+			if maxVer < v {
+				maxVer = v
+			}
+		}
+
+		for key, ips := range versions {
+			if key != maxVer {
+				oddNodesList.HaveDifferentVersions[key] = ips
+			}
+		}
+
+		oddNodesList.NewestVersion = maxVer
+	}
+
+	if len(protocolVersions) > 1 {
+		var maxVer int64
+		maxVer = 0
+		for v := range protocolVersions {
+			if maxVer < v {
+				maxVer = v
+			}
+		}
+
+		for key, ips := range protocolVersions {
+			if key != maxVer {
+				oddNodesList.HaveDifferentProtocolVersions[key] = ips
+			}
+		}
+
+		oddNodesList.NewestProtocolVersion = maxVer
+	}
+
+	PostVersionMismatchReport(slackApi, channel, oddNodesList)
 }

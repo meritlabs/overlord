@@ -106,6 +106,10 @@ func IsResponseValid(res CheckResponse) bool {
 	return res.Error == ""
 }
 
+func IsVersionResponseValid(res VersionResponse) bool {
+	return res.Error == ""
+}
+
 func DoesHeadersAndBlocksMatch(res CheckResponse) bool {
 	return res.Status.Headers == res.Status.Blocks
 }

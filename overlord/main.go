@@ -11,9 +11,10 @@ import (
 )
 
 var (
-	pingDelay  = 30
-	checkDelay = 600
-	ticks      = checkDelay / pingDelay
+	pingDelay          = 30
+	checkDelay         = 600
+	ticks              = checkDelay / pingDelay
+	ticksToTestVersion = 10
 )
 
 func main() {
@@ -43,6 +44,7 @@ func main() {
 	slackAPI := messaging.InitSlack(slackAPIKey)
 
 	countdown := ticks
+	versionCheckCounter := 0
 	for t := range time.NewTicker(time.Duration(pingDelay) * time.Second).C {
 		fmt.Printf("Performing checks %v, %v\n", t, countdown)
 		countdown--
@@ -52,6 +54,12 @@ func main() {
 		if countdown == 0 {
 			go messaging.DoCheck(slackAPI, slackChannel, ips)
 			countdown = ticks
+			versionCheckCounter++
+		}
+
+		if versionCheckCounter == ticksToTestVersion {
+			go messaging.DoVersionCheck(slackAPI, slackChannel, ips)
+			versionCheckCounter = 0
 		}
 	}
 }
