@@ -14,3 +14,6 @@
 
 # Binaries
 bin
+
+# Config
+overlord.yaml
