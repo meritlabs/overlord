@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/meritlabs/overlord/overlord/messaging"
+	"github.com/meritlabs/overlord/pkg/overlord/messaging"
 	"github.com/spf13/viper"
 )
 

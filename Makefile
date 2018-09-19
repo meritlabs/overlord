@@ -1,10 +1,10 @@
 build: build-overseer build-overlord
 
 build-overseer:
-	go build -o ./tmp/overseer ./overseer
+	go build -o ./bin/overseer ./cmd/overseer/main.go
 
 build-overlord:
-	go build -o ./tmp/overlord ./overlord
+	go build -o ./bin/overlord ./cmd/overlord/main.go
 
 clean:
-	rm tmp/*
+	rm overseer overlord

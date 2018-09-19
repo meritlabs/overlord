@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/meritlabs/overlord/overseer/controllers"
+	"github.com/meritlabs/overlord/pkg/overseer/controllers"
 )
 
 func main() {
