@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/meritlabs/overlord/blockchain"
+	"github.com/meritlabs/overlord/pkg/blockchain"
 	"github.com/nlopes/slack"
 )
 

@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/meritlabs/overlord/pkg/overlord/messaging"
+	"github.com/meritlabs/overlord/pkg/messaging"
 	"github.com/spf13/viper"
 )
 
-var (
+const (
 	pingDelay          = 30
 	checkDelay         = 600
 	ticks              = checkDelay / pingDelay

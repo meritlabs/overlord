@@ -5,8 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/meritlabs/overlord/pkg/overseer/controllers"
+	"github.com/meritlabs/overlord/pkg/controllers"
 )
 
 func main() {
@@ -21,12 +20,14 @@ func main() {
 
 	r := gin.Default()
 
-	r.GET("/ping", controllers.Ping)
+	r.GET("/ping", func(c *gin.Context) {
+		controllers.Ping()
+	})
 	r.GET("/check", func(c *gin.Context) {
-		controllers.Status(c, mode)
+		controllers.Status(mode)
 	})
 	r.GET("/version", func(c *gin.Context) {
-		controllers.Version(c, mode)
+		controllers.Version(mode)
 	})
 
 	r.Run()
