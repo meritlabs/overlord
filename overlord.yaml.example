@@ -1,0 +1,7 @@
+slack_api_key: "my-slack-token"
+
+slack_channel: "notifications-channel"
+
+ip_addresses: 
+- 127.0.0.1
+- 0.0.0.0

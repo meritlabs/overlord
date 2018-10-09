@@ -6,26 +6,13 @@ import (
 	"os/exec"
 )
 
-var (
+const (
 	binary      = "/usr/local/bin/merit-cli"
 	statusCmd   = "getblockchaininfo"
 	veresionCmd = "getnetworkinfo"
 )
 
-/*
-{
-  "chain": "main",
-  "blocks": 117092,
-  "headers": 117092,
-  "bestblockhash": "07eb1c7e6213a112635a329a7fccedf389c646438e1fe665220c7787587bb91e",
-  "difficulty": 1.918193663961827e-08,
-  "mediantime": 1521716735,
-  "verificationprogress": 1,
-  "chainwork": "00000000000000000000000000000000000000000000000000000000004173ba",
-  "pruned": false
-}
-*/
-
+// BlockchainInfo - blockchaininfo response data
 type BlockchainInfo struct {
 	Chain                string  `json:"chain"`
 	Blocks               int32   `json:"blocks"`
@@ -38,21 +25,25 @@ type BlockchainInfo struct {
 	Pruned               bool    `json:"pruned"`
 }
 
+// CheckResponse - status http response
 type CheckResponse struct {
 	Status BlockchainInfo `json:"status"`
 	Error  string         `json:"error"`
 }
 
+// VersionInfo - daemon and protocol level data
 type VersionInfo struct {
 	Version         int64 `json:"version"`
 	ProtocolVersion int64 `json:"protocolversion"`
 }
 
+// VersionResponse - version response
 type VersionResponse struct {
 	Info  VersionInfo `json:"info"`
 	Error string      `json:"error"`
 }
 
+// GetBlockchainInfo - executes getblockchaininfo command
 func GetBlockchainInfo(mode string) (*BlockchainInfo, error) {
 	res, err := execute(binary, "--"+mode, statusCmd)
 
@@ -73,6 +64,7 @@ func GetBlockchainInfo(mode string) (*BlockchainInfo, error) {
 	return &info, nil
 }
 
+// GetInfo - executes getinfo command
 func GetInfo(mode string) (*VersionInfo, error) {
 	res, err := execute(binary, "--"+mode, veresionCmd)
 
@@ -102,14 +94,17 @@ func execute(command string, args ...string) ([]byte, error) {
 	return cmd.Output()
 }
 
+// IsResponseValid - checks CheckResponse for errors
 func IsResponseValid(res CheckResponse) bool {
 	return res.Error == ""
 }
 
+// IsVersionResponseValid - checks VersionResponse for errors
 func IsVersionResponseValid(res VersionResponse) bool {
 	return res.Error == ""
 }
 
+// DoesHeadersAndBlocksMatch - checks CheckResponse for errors
 func DoesHeadersAndBlocksMatch(res CheckResponse) bool {
 	return res.Status.Headers == res.Status.Blocks
 }

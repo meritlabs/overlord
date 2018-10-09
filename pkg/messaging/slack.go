@@ -7,11 +7,13 @@ import (
 	"github.com/nlopes/slack"
 )
 
+// InitSlack - initiate Slack API
 func InitSlack(token string) *slack.Client {
 	slackAPI := slack.New(token)
 	return slackAPI
 }
 
+// ReadChannels - get Slack channels list
 func ReadChannels(slackAPI *slack.Client) {
 	channels, err := slackAPI.GetChannels(false)
 	if err != nil {
@@ -20,11 +22,10 @@ func ReadChannels(slackAPI *slack.Client) {
 	}
 	for _, channel := range channels {
 		fmt.Println(channel.Name)
-		// channel is of type conversation & groupConversation
-		// see all available methods in `conversation.go`
 	}
 }
 
+// PostMessage - sends a message to Slack channel
 func PostMessage(slackAPI *slack.Client, message string, channel string) {
 	params := slack.PostMessageParameters{}
 	channelID, timestamp, err := slackAPI.PostMessage(channel, message, params) //grab channel from config
@@ -37,6 +38,7 @@ func PostMessage(slackAPI *slack.Client, message string, channel string) {
 	fmt.Printf("Message successfully sent to channel %s at %s", channelID, timestamp)
 }
 
+// PostOddNodesReport - posts report containing all nodes with differences in blockchain status
 func PostOddNodesReport(slackAPI *slack.Client, channel string, nodes OddNodes) {
 	var message string
 	post := false
@@ -96,6 +98,7 @@ func PostOddNodesReport(slackAPI *slack.Client, channel string, nodes OddNodes) 
 	}
 }
 
+// PostVersionMismatchReport - posts report containing all nodes with differences daemon or protocol version
 func PostVersionMismatchReport(slackAPI *slack.Client, channel string, nodes MismatchVeresionNodes) {
 	var message string
 	post := false

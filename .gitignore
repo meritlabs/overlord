@@ -6,6 +6,9 @@
 *.so
 *.dylib
 
+# Packages
+vendor
+
 # Test binary, build with `go test -c`
 *.test
 
@@ -13,4 +16,7 @@
 *.out
 
 # Binaries
-tmp
+bin
+
+# Config
+overlord.yaml

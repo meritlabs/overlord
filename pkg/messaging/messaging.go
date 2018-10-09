@@ -5,27 +5,31 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/meritlabs/overlord/blockchain"
+	"github.com/meritlabs/overlord/pkg/blockchain"
 	"github.com/nlopes/slack"
 )
 
+// Ping - ping payload
 type Ping struct {
 	ip       string
 	isOnline bool
 }
 
+// Check - blockchain status check payload
 type Check struct {
 	ip       string
 	response *blockchain.CheckResponse
 	isOnline bool
 }
 
+// VersionCheck - version check payload
 type VersionCheck struct {
 	ip       string
 	response *blockchain.VersionResponse
 	isOnline bool
 }
 
+// OddNodes - datatype for storing info about nodes with mismatches in blockchain state
 type OddNodes struct {
 	RespondedWithError           []string
 	HeadersAndBlocksDontMatch    []string
@@ -36,6 +40,7 @@ type OddNodes struct {
 	HaveDifferentBestBlockHash   map[string][]string
 }
 
+// MismatchVeresionNodes - datatype for storing info about nodes with mismatches in version/protocol version
 type MismatchVeresionNodes struct {
 	RespondedWithError            []string
 	HaveDifferentVersions         map[int64][]string
@@ -44,6 +49,7 @@ type MismatchVeresionNodes struct {
 	NewestProtocolVersion         int64
 }
 
+// DoPing - ping list of nodes
 func DoPing(ips []string) {
 	pingChannel := make(chan Ping)
 
@@ -77,6 +83,7 @@ func DoPing(ips []string) {
 	}
 }
 
+// DoCheck - check blockchain status of nodes
 func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 	checkChannel := make(chan Check)
 	results := make(map[string]blockchain.CheckResponse)
@@ -226,6 +233,7 @@ func DoCheck(slackApi *slack.Client, channel string, ips []string) {
 	PostOddNodesReport(slackApi, channel, oddNodesList)
 }
 
+// DoVersionCheck - check version/protocol versions of nodes
 func DoVersionCheck(slackApi *slack.Client, channel string, ips []string) {
 	checkChannel := make(chan VersionCheck)
 	results := make(map[string]blockchain.VersionResponse)
