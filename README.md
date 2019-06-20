@@ -1,5 +1,7 @@
 # Overlord
 
+[![Build Status](https://travis-ci.org/meritlabs/overlord.svg?branch=master)](https://travis-ci.org/meritlabs/overlord)
+
 The monitoring application, composed from server `Overlord` and agent `Overseer`.
 It performs 3 types of checks:
 - node availability through ping requests to the agent;
@@ -11,7 +13,7 @@ The application reports any inconsittencies to Slack.
 ## Prerequisites
 
 * Go
-* Go modules - (description)[https://blog.golang.org/using-go-modules]
+* Go modules - [description](https://blog.golang.org/using-go-modules)
 * Make 
 
 # Getting started

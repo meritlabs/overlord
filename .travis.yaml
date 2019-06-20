@@ -1,0 +1,16 @@
+language: go
+
+go:
+- 1.12.x
+
+env: 
+- GO111MODULE=on
+
+jobs:
+  include:
+    - stage: bootstrap
+      name: "Bootstrap"
+      script: make bootstrap
+    - stage: "build"           
+      name: "Build"
+      script: make build
