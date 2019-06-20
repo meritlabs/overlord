@@ -21,7 +21,7 @@ build-overlord:
 
 .PHONY: clean
 clean:
-	rm -rf ./bin/overseer ./bin/overlord ./vendor
+	rm -rf ./bin/overseer ./bin/overlord
 
 .PHONY: clean-ci
 clean-ci:
@@ -31,4 +31,4 @@ clean-ci:
 .PHONY: bootstrap
 bootstrap:
 	if [ ! -d "$(SRC)" ]; then mkdir -p "$(GO_SRC)/$(PACKAGE_PATH)" && ln -s "$(PWD)" "$(SRC)" ; fi
-	cd "$(SRC)" && dep ensure
+	cd "$(SRC)" && go get

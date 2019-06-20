@@ -11,12 +11,12 @@ The application reports any inconsittencies to Slack.
 ## Prerequisites
 
 * Go
-* dep - [Go dependency management tool](https://golang.github.io/dep/)
+* Go modules - (description)[https://blog.golang.org/using-go-modules]
 * Make 
 
 # Getting started
 
-With `Go`, `Make` and `dep` configured, clone the repository and change direcory to the neewe folder.
+With `Go`, `Make` and `Go modules` configured, clone the repository and change direcory to the neewe folder.
 Then execute `make bootstrap` to install all dependencies required
 
 To compile project, use `make` command.
@@ -36,4 +36,4 @@ Please, check out our [Contribution guide](./CONTRIBUTING.md) and [Code of Condu
 
 **Code released under [the MIT license](./LICENSE).**
 
-Copyright (C) 2017 - 2018 The Merit Foundation.
+Copyright (C) 2017 - 2019 The Merit Foundation.
