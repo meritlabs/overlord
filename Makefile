@@ -38,4 +38,5 @@ clean-ci:
 .PHONY: bootstrap
 bootstrap:
 	if [ ! -d "$(SRC)" ]; then mkdir -p "$(GO_SRC)/$(PACKAGE_PATH)" && ln -s "$(PWD)" "$(SRC)" ; fi
+	cd "$(SRC)" && go get github.com/jessevdk/go-assets-builder
 	cd "$(SRC)" && go get
