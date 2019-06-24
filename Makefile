@@ -10,6 +10,7 @@ OVERSEER_BIN=./bin/overseer
 
 GO=go
 GO_FMT=$(GO) fmt
+GO_ASSETS=$(GO_PATH)/bin/go-assets-builder
 
 .PHONY: build
 build: build-overseer build-overlord
@@ -20,7 +21,7 @@ build-overseer:
 
 .PHONY: build-assets
 build-assets:
-	go-assets-builder html --package=statuspage --variable=Assets --output=$(ASSETS_OUTPUT)
+	$(GO_ASSETS) html --package=statuspage --variable=Assets --output=$(ASSETS_OUTPUT)
 
 .PHONY: build-overlord
 build-overlord: build-assets
