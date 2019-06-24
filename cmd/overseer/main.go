@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/meritlabs/overlord/pkg/controllers"
+	controllers "github.com/meritlabs/overlord/pkg/controllers/reporting"
 )
 
 func main() {

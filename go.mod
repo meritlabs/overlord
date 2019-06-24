@@ -22,8 +22,10 @@ require (
 	github.com/spf13/jwalterweatherman v1.0.0
 	github.com/spf13/pflag v1.0.2
 	github.com/spf13/viper v1.2.0
+	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/ugorji/go v1.1.1
-	golang.org/x/sys v0.0.0-20180918153733-ee1b12c67af4
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
+	golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a
 	golang.org/x/text v0.3.0
 	gopkg.in/go-playground/validator.v8 v8.18.2
 	gopkg.in/yaml.v2 v2.2.1
