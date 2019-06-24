@@ -3,9 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
+	"io/ioutil"
+	"net/http"
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
+	controllers "github.com/meritlabs/overlord/pkg/controllers/statuspage"
 	"github.com/meritlabs/overlord/pkg/messaging"
 	"github.com/spf13/viper"
 )
@@ -16,6 +21,41 @@ const (
 	ticks              = checkDelay / pingDelay
 	ticksToTestVersion = 10
 )
+
+func loadTemplate() (*template.Template, error) {
+	t := template.New("")
+	for name, file := range controllers.Assets.Files {
+		if file.IsDir() || !strings.HasSuffix(name, ".tmpl") {
+			continue
+		}
+		h, err := ioutil.ReadAll(file)
+		if err != nil {
+			return nil, err
+		}
+		t, err = t.New(name).Parse(string(h))
+		if err != nil {
+			return nil, err
+		}
+	}
+	return t, nil
+}
+
+func startHTTPServer() {
+	fmt.Println("Running HTTP Server")
+
+	r := gin.Default()
+	t, err := loadTemplate()
+	if err != nil {
+		panic(err)
+	}
+	r.SetHTMLTemplate(t)
+
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "/html/index.tmpl", gin.H{})
+	})
+
+	r.Run(":9999")
+}
 
 func main() {
 	fmt.Printf("Overlord is ready.\n")
@@ -42,6 +82,8 @@ func main() {
 	fmt.Printf("Posting to Slack channel: %s \n", slackChannel)
 
 	slackAPI := messaging.InitSlack(slackAPIKey)
+
+	startHTTPServer()
 
 	countdown := ticks
 	versionCheckCounter := 0

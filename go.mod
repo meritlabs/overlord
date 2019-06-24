@@ -9,6 +9,9 @@ require (
 	github.com/golang/protobuf v1.2.0
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/hcl v1.0.0
+	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15
+	github.com/jessevdk/go-assets-builder v0.0.0-20130903091706-b8483521738f // indirect
+	github.com/jessevdk/go-flags v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.5
 	github.com/magiconair/properties v1.8.0
 	github.com/mattn/go-isatty v0.0.4

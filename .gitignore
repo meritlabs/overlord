@@ -18,5 +18,8 @@ vendor
 # Binaries
 bin
 
+# Generated code
+pkg/controllers/statuspage/assets.go
+
 # Config
 overlord.yaml
